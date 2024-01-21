@@ -1,17 +1,15 @@
 const path = require('path');
 const {
-  rm,
-  mkdir,
-  readdir,
+  promises: fsPromises,
   createReadStream,
   createWriteStream,
-} = require('fs/promises');
+} = require('fs');
 
 const srcPath = path.join(__dirname, 'files');
 const copyPath = path.join(__dirname, 'files-copy');
 
 function copyFiles() {
-  return readdir(srcPath).then((files) => {
+  return fsPromises.readdir(srcPath).then((files) => {
     const copyPromises = files.map((file) => {
       const readStream = createReadStream(path.join(srcPath, file));
       const writeStream = createWriteStream(path.join(copyPath, file));
@@ -30,8 +28,9 @@ function copyFiles() {
 }
 
 function setup() {
-  return rm(`${copyPath}`, { recursive: true, force: true })
-    .then(() => mkdir(`${copyPath}`, { recursive: true }))
+  return fsPromises
+    .rm(`${copyPath}`, { recursive: true, force: true })
+    .then(() => fsPromises.mkdir(`${copyPath}`, { recursive: true }))
     .then(() => copyFiles());
 }
 
