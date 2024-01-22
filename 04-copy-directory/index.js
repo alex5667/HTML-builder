@@ -22,7 +22,6 @@ function copyFiles() {
         readStream.pipe(writeStream);
       });
     });
-
     return Promise.all(copyPromises);
   });
 }
